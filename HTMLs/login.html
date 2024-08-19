@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css">
+  <style>
+    /* Custom CSS */
+    html, body {
+      height: 100%;
+      
+    }
+
+    body {
+      background-image: url('./images/2.JPG');
+    }
+
+    .full-height {
+      min-height: 100vh;
+    }
+
+    .logo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .logo-item {
+      width: 50%;
+      padding: 1rem;
+      box-sizing: border-box;
+      text-align: center;
+    }
+  </style>
+  <title>Login Page</title>
+</head>
+<body>
+  <div class="container-fluid full-height">
+    <div class="row full-height">
+      <!-- First Column -->
+      <div class="col-md-6 text-white  border border-dark">
+        <div class="d-flex flex-column justify-content-center align-items-center h-100">
+          <img src="./images/qREAD RAMAN.png" alt="Logo" class="mb-4 rounded-circle w-25">
+          <form class="mb-4">
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="name">
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email">
+            </div>
+            <div class="mb-3">
+              <label for="selector" class="form-label">Selector</label>
+              <select class="form-select" id="selector">
+                <option value="option1">Tomato</option>
+                <option value="option2">Citrus</option>
+                <option value="option3">DEV</option>
+              </select>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button class="btn btn-success" type="submit">Login</button>
+              <button class="btn btn-light" type="button">Register</button>
+              <a class="btn btn-light" href="/tomato1" role="button">Use as Guest</a>
+              <button class="btn btn-light" type="button">Login Stats</button>
+            </div>
+          </form>
+          
+        </div>
+      </div>
+
+      <!-- Second Column -->
+      <div class="col-md-6 bg-success">
+        <div class="d-flex align-items-center justify-content-center h-100">
+          <div class="logo-grid">
+            <div class="logo-item p-0">
+              <img src="./images/conacyt.png" alt="Logo 1" class="w-75">
+            </div>
+            <div class="logo-item p-0">
+              <img src="./images/uaslp.png" alt="Logo 2" class="w-75"> 
+            </div>
+            <div class="logo-item p-0">
+              <img src="./images/uaaan.png" alt="Logo 3" class="w-75">
+            </div>
+            <div class="logo-item p-0">
+              <img src="./images/GEO.png" alt="Logo 4" class="w-75">
+            </div>
+            <div class="logo-item p-0">
+              <img src="./images/ciacytNew.png" alt="Logo 4" class="w-75">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

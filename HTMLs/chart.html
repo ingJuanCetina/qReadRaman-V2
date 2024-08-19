@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/2.1.0/chartjs-plugin-annotation.min.js"></script>
+    <title>Fullscreen</title>
+    <style>
+        /* Custom CSS */
+        html, body {
+          height: 100%;
+          
+        }
+    
+        body {
+          background-image: url('./images/2.JPG');
+        }
+    
+        .full-height {
+          min-height: 100vh;
+        }
+    
+        .logo-grid {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+        }
+    
+        .logo-item {
+          width: 50%;
+          padding: 1rem;
+          box-sizing: border-box;
+          text-align: center;
+        }
+      </style>
+</head>
+<body>
+
+    <div class="col-5 p-0 border border-dark ms-3 me-1" id="chartContainer">
+        <canvas id="myChart" class="border border-dark p-0" style="width:100%;height:95%;opacity:1;"></canvas>
+        <script>
+          window.addEventListener('message', function(event) {
+            var datasets = event.data;
+            renderChart(datasets);
+             });
+          
+          plotChart1(dataset)
+  
+          function plotChart1(dataset) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const plugin = {
+              id: 'customCanvasBackgroundColor',
+              beforeDraw: (chart, args, options) => {
+                const {ctx} = chart;
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = options.color || '#99ffff';
+                ctx.fillRect(0, 0, chart.width, chart.height);
+                ctx.restore();
+              }
+            };
+            myChart = new Chart(ctx, {
+              type: 'scatter',
+              data: {datasets: dataset},
+              plugins: [plugin],
+              options: {
+                maintainAspectRatio: true,
+                animation: false,
+                scales: {
+                  y: {
+                    ticks: {callback: function (value, index, values) {
+                        return value / 100;}},
+                    border: {color: 'black'},
+                    ticks: {color: 'black'},
+                    beginAtZero: true,
+                    title: {color: 'black', display: true, text: 'Intensity (a.u.)'},
+                  },
+                  x: {
+                    min: 800,
+                    max: 1750,
+                    border: {color: 'black'},
+                    ticks: {color: 'black'},
+                    title: {color: 'black', display: true, text: 'Raman Shift [cm -1]'},
+                  },
+                },
+                plugins: {
+                  customCanvasBackgroundColor: {color: 'white'},
+                  legend: {display: true},
+                  tooltip: {enabled: true},
+                  autocolors: false,
+                  annotation: {},
+                  zoom: {zoom: {
+                            wheel: {enabled: true},
+                            pinch: {enabled: true},
+                            mode: 'xy',
+                    }
+                  },
+                }
+              }
+  
+            });
+          }
+        </script>
+      </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

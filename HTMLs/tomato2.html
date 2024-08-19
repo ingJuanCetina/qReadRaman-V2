@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>qREAD_Raman</title>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/2.1.0/chartjs-plugin-annotation.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.6.1/randomColor.min.js"
+    integrity="sha512-vPeZ7JCboHcfpqSx5ZD+/jpEhS4JpXxfz9orSvAPPj0EKUVShU2tgy7XkU+oujBJKnWmu4hU7r9MMQNWPfXsYw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <script src="https://cdn.plot.ly/plotly-2.24.1.min.js" charset="utf-8"></script>
+  <style>
+    body {
+      background-image: url('./images/5.jpg');
+      overflow: hidden;
+      min-height: 100vh;
+    }
+    .noDecor {text-decoration: none}
+    .f12 {font-size: 12px}
+    .f14 {font-size: 14px}
+    .f16 {font-size: 16px}
+    .f18 {font-size: 18px}
+    .toolBar {
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      font-size: 18px;
+    }
+    </style>
+</head>
+
+<script>
+  let dataset = [];
+  let dataset2 = [];
+</script>
+
+<body onload="firstPlot()">
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Classifier Results</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+              Classifier:
+            </div>
+            <div class="col" id="classifierName">
+              Tester
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              Number of Samples:
+            </div>
+            <div class="col" id="samples">
+              XXX
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              CLso:
+            </div>
+            <div class="col" id="clso">
+              XX.xx%
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              CMM:
+            </div>
+            <div class="col" id="cmm">
+              XX.xx%
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              Healthy:
+            </div>
+            <div class="col" id="healty">
+              XX.xx%
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              Diagnosis:
+            </div>
+            <div class="col" id="result">
+              This or That
+            </div>
+          </div>
+          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary modal1-exp" id="save">Export Results</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">Concensus Results</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div class="row">
+            <div class="col">
+              Classifier
+            </div>
+            <div class="col">
+              Diagnosis
+            </div>
+            <div class="col">
+              Confidence
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col">
+              MLP
+            </div>
+            <div class="col" id="dMLP">
+              Something
+            </div>
+            <div class="col" id="pMLP">
+              XX.xx%
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              LSTM
+            </div>
+            <div class="col" id="dLSTM">
+              Something
+            </div>
+            <div class="col" id="pLSTM">
+              XX.xx%
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              LDA
+            </div>
+            <div class="col" id="dLDA">
+              Something
+            </div>
+            <div class="col" id="pLDA">
+              XX.xx%
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              KNN
+            </div>
+            <div class="col" id="dKNN">
+              Something
+            </div>
+            <div class="col" id="pKNN">
+              XX.xx%
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              PLS
+            </div>
+            <div class="col" id="dPLS">
+              Something
+            </div>
+            <div class="col" id="pPLS">
+              XX.xx%
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col">
+              Concensus
+            </div>
+            <div class="col" id="dCons">
+              Something
+            </div>
+            <div class="col" id="pCons">
+              XX.xx%
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary modal2-exp" id="save">Export Results</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $("#exampleModal").on("shown.bs.modal", function(){
+      $(this).find("button").first().focus()
+    })
+  </script>
+
+
+  <div class="row g-0 position-absolute t-0 border border-success h-100" style="width: 17%;z-index: 20;" id="sideBar">
+    <div class="col-12 text-center border border-success p-0 m-0 pt-3"
+      style="height: 100%; background-color: rgba(20,108,67, 0.9);">
+      <img class="p-0 m-auto border border-success" src="./images/qREAD RAMAN.png" alt="profile_picture"
+        style="border-radius: 50%; width: 100px; height: 100px;">
+      <div class="row p-0 m-0 py-2">
+        <p class="text-center p-0 m-0"><b>qREAD_Raman</b></p>
+        <p class="text-center p-0 m-0 f14">Raman Early Analysis Diseases</p>
+      </div>
+      <div class="row border border-success p-0 m-0">
+        <select class="form-select form-select-sm text-center" id="dess" aria-label=".form-select-sm example">
+          <option value="0">CLso - Healthy</option>
+          <option value="1">Cmm - Healthy</option>
+          <option value="2" selected>CLso - Cmm - Healthy</option>
+        </select>
+      </div>
+      <div class="row border border-success p-0 m-0">
+        <button id="dataUpload" class="text-white btn f16" data-bs-toggle="collapse"
+          href="#dataUploadD" role="button" aria-expanded="false" aria-controls="dataUploadD">
+          <span class="icon"><i class="fas fa-home"></i></span>
+          <span class="item">PCA Calculation</span>
+        </button>
+        <div class="collapse p-0 m-0 text-white" id="dataUploadD" data-bs-parent="#sideBar">
+          <div class="card p-0 px-3 card-body bg-success w-100">
+            <div class="row">
+              <div class="col-6 border border-secondary rounded h-50 p-0">
+                <button class="btn btn-success text-white f12" id="PCA">Calculate PCA's</button>
+              </div>
+              <div class="col-6 border border-secondary rounded h-50 p-0">
+                <button class="btn btn-success text-white f12" id="exportPCA">Export data</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row border border-success p-0 m-0">
+        <a id="outlierRemoval" class="text-white btn f16"
+          data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+          aria-controls="collapseExample">
+          <span class="icon"><i class="fas fa-home"></i></span>
+          <span class="item">Perceptron</span>
+        </a>
+        <div class="collapse p-0 m-0 text-white" id="collapseExample" data-bs-parent="#sideBar">
+          <div class="card p-0 px-3 card-body bg-success w-100">
+            <div class="row">
+              <div class="col-6 border border-secondary rounded h-50 p-0">
+                <button type="button" class="btn btn-success text-white f12" id="testMLP">Test MLP</button>
+              </div>
+              <div class="col-6 border border-secondary rounded h-50 p-0">
+                <button class="btn btn-success text-white f12 expButton" id="exportMLP" >Export</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row border border-success p-0 m-0">
+        <a id="outlierRemoval" class="text-white btn f16"
+          data-bs-toggle="collapse" href="#fluoRemoval" role="button" aria-expanded="false" aria-controls="fluoRemoval">
+          <span class="icon"><i class="fas fa-home"></i></span>
+          <span class="item">LSTM</span>
+        </a>
+        <div class="collapse p-0 m-0 text-white" id="fluoRemoval" data-bs-parent="#sideBar">
+          <div class="card p-0 px-3 card-body bg-success w-100">
+            <div class="row">
+              <div class="col-6 border border-secondary rounded h-50 p-0">
+                <button class="btn btn-success text-white f12 " id="testLSTM">Test LSTM</button>
+              </div>
+              <div class="col-6 border border-secondary rounded h-50 p-0">
+                <button class="btn btn-success text-white f12 expButton" id="exportLSTM">Export</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row border border-success p-0 m-0">
+        <a id="outlierRemoval" class="text-white btn f16"
+          data-bs-toggle="collapse" href="#normal" role="button" aria-expanded="false" aria-controls="normal">
+          <span class="icon"><i class="fas fa-home"></i></span>
+          <span class="item">LDA</span>
+        </a>
+        <div class="collapse p-0 m-0 text-white" id="normal" data-bs-parent="#sideBar">
+          <div class="card p-0 px-3 card-body bg-success w-100">
+            <div class="row">
+              <div class="col-6 border border-secondary rounded h-50 p-0">
+                <button class="btn btn-success text-white f12 " id="testLDA">Test LDA</button>
+              </div>
+              <div class="col-6 border border-secondary rounded h-50 p-0">
+                <button class="btn btn-success text-white f12 expButton" id="exportLDA">Export</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row border border-success p-0 m-0">
+        <a id="outlierRemoval" class="text-white btn f16"
+          data-bs-toggle="collapse" href="#diagnosis" role="button" aria-expanded="false" aria-controls="diagnosis">
+          <span class="icon"><i class="fas fa-home"></i></span>
+          <span class="item">KNN</span>
+        </a>
+        <div class="collapse p-0 m-0 text-white" id="diagnosis" data-bs-parent="#sideBar">
+          <div class="card p-0 px-3 card-body bg-success w-100">
+            <div class="row">
+              <div class="col-6 border border-secondary rounded h-50 p-0">
+                <button class="btn btn-success text-white f12 " id="testKNN">Test KNN</button>
+              </div>
+              <div class="col-6 border border-secondary rounded h-50 p-0">
+                <button class="btn btn-success text-white f12 expButton" id="exportKNN">Export</button>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div class="row border border-success p-0 m-0">
+          <a id="outlierRemoval" class="text-white btn f16"
+            data-bs-toggle="collapse" href="#PLSDA" role="button" aria-expanded="false" aria-controls="PLSDA">
+            <span class="icon"><i class="fas fa-home"></i></span>
+            <span class="item">PLS-DA</span>
+          </a>
+          <div class="collapse p-0 m-0 text-white" id="PLSDA" data-bs-parent="#sideBar">
+            <div class="card p-0 px-3 card-body bg-success w-100">
+              <div class="row">
+                <div class="col-6 border border-secondary rounded h-50 p-0">
+                  <button class="btn btn-success text-white f12 " id="testPLS">Test PLS-DA</button>
+                </div>
+                <div class="col-6 border border-secondary rounded h-50 p-0">
+                  <button class="btn btn-success text-white f12 expButton" id="exportPLS">Export</button>
+                </div>
+              </div>
+              </div>
+            </div>
+          </div>
+          <div class="row border border-success p-0 m-0">
+            <a id="outlierRemoval" class="text-white btn f16"
+              data-bs-toggle="collapse" href="#concensus" role="button" aria-expanded="false" aria-controls="PLSDA">
+              <span class="icon"><i class="fas fa-home"></i></span>
+              <span class="item">Concensus</span>
+            </a>
+            <div class="collapse p-0 m-0 text-white" id="concensus" data-bs-parent="#sideBar">
+              <div class="card p-0 px-3 card-body bg-success w-100">
+                <div class="row">
+                  <div class="col-6 border border-secondary rounded h-50 p-0">
+                    <button class="btn btn-success text-white f12 " id="testConcensus">Concensus</button>
+                  </div>
+                  <div class="col-6 border border-secondary rounded h-50 p-0">
+                    <button class="btn btn-success text-white f12" id="exportConcensus">Export</button>
+                  </div>
+                </div>
+                </div>
+              </div>
+            </div>
+          <div class="col-12 border border-secondary rounded p-0">
+            <a href="tomato1" class="btn btn-success text-white f14 w-100" role="button">Go Back <-</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-end m-0" style="width:100%;height:50px;">
+    <div class="col-2 border border-primary bg-primary opacity-75"></div>
+    <div class="col-2 border border-primary bg-primary opacity-75">
+      <button class="btn btn-primary text-white p-0 toolBar" type="button" id="quickGuide" data-bs-toggle="dropdown" aria-expanded="false"
+        data-bs-offset="0,10">
+        <a href="#" class="pt-0 m-0 text-white noDecor" >Quick Guide</a>
+      </button>
+    </div>
+    <div class="col-2 border border-primary bg-primary opacity-75">
+      <button class="btn btn-primary text-white p-0 toolBar" type="button" id="userManual" data-bs-toggle="dropdown" aria-expanded="false"
+        data-bs-offset="0,10">
+        <a href="#" class="pt-0 m-0 text-white noDecor" >User Manual</a>
+      </button>
+    </div>
+    <div class="col-2 border border-primary bg-primary opacity-75">
+      <button class="btn btn-primary text-white p-0 toolBar" type="button" id="resources" data-bs-toggle="dropdown" aria-expanded="false"
+        data-bs-offset="0,10">
+        <a href="#" class="pt-0 m-0 text-white noDecor">Resources</a>
+      </button>
+    </div>
+    <div class="col-2 border border-primary bg-primary opacity-75">
+      <button class="btn btn-primary text-white p-0 toolBar" type="button" id="contact" data-bs-toggle="dropdown" aria-expanded="false"
+        data-bs-offset="0,10">
+        <a href="#" class="pt-0 m-0 text-white noDecor">Contact</a>
+      </button>
+    </div>
+  </div>
+  <div class="row pt-4" style="height: 450px;">
+    <div class="col-2 opacity-75 me-0"></div>
+    <div class="col-5 p-0 border border-dark ms-3 me-1" id="chartContainer">
+      <canvas id="myChart" class="border border-dark p-0" style="width:100%;height:95%;opacity:1;"></canvas>
+      <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        dataset = [{
+          label: 'RD 1',
+          data: [{x: 0, y: 0}],
+          backgroundColor: 'rgba(127, 0, 0, 1)',
+          borderWidth: 1,
+          borderColor: 'rgba(0, 0, 0, 0.5)',
+          pointRadius: 0.5,
+          pointStyle: 'circle',
+          tension: 0,
+          showLine: true,
+        }]
+        plotChart1(dataset)
+
+        function plotChart1(dataset) {
+          const ctx = document.getElementById('myChart').getContext('2d');
+
+          const plugin = {
+            id: 'customCanvasBackgroundColor',
+            beforeDraw: (chart, args, options) => {
+              const {ctx} = chart;
+              ctx.save();
+              ctx.globalCompositeOperation = 'destination-over';
+              ctx.fillStyle = options.color || '#99ffff';
+              ctx.fillRect(0, 0, chart.width, chart.height);
+              ctx.restore();
+            }
+          };
+
+          myChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {datasets: dataset},
+            plugins: [plugin],
+            options: {
+              onClick: function(event, elements) {
+                  if (elements.length > 0) {
+                    var datasetIndex = elements[0].datasetIndex;
+                    undoStackDatos.pushState(datos[datasetIndex]);
+                    undoStackDatosDS3.pushState(datosDS3[datasetIndex]);
+                    myChart.data.datasets.splice(datasetIndex, 1);
+                    var d1 = datos.splice(datasetIndex, 1);
+                    var d2 = datosDS3.splice(datasetIndex, 1);
+                    var d3 = 0;
+                    var d4 = 0;
+                    if (noFluo.length > 0) {d3 = 
+                      undoStackNoFluo.pushState(noFluo[datasetIndex]);
+                      noFluo.splice(datasetIndex, 1)
+                      } else {console.log("Array is empty")};
+                    if (normal.length > 0) {
+                      undoStackNormal.pushState(normal[datasetIndex]);
+                      d4 = normal.splice(datasetIndex, 1)
+                      } else {console.log("Array is empty")};
+                    myChart.update();
+                    $.ajax({
+                      url: '/update-variable',
+                      method: 'POST',
+                      contentType: 'application/json',
+                      data: JSON.stringify({ 
+                        datos : datos,
+                        datosDS3 : datosDS3,
+                        noFluo : noFluo,
+                        normal : normal,
+                      }),
+                      success: function(response) {
+                      },
+                    });
+                  }
+                },
+              maintainAspectRatio: true,
+              animation: false,
+              scales: {
+                y: {
+                  //ticks: {callback: function (value, index, values) {
+                    //  return value / 100;}},
+                  border: {color: 'black'},
+                  ticks: {color: 'black'},
+                  beginAtZero: true,
+                  title: {color: 'black', display: true, text: 'Intensity (a.u.)'},
+                },
+                x: {
+                  min: 800,
+                  max: 1750,
+                  border: {color: 'black'},
+                  ticks: {color: 'black'},
+                  title: {color: 'black', display: true, text: 'Raman Shift [cm -1]'},
+                },
+              },
+              plugins: {
+                customCanvasBackgroundColor: {color: 'white'},
+                legend: {
+                  display: true,
+                  labels: {
+                    usePointStyle: true,
+                    boxWidth: 6,
+                  },},
+                tooltip: {
+                  enabled: true,
+                  callbacks: {
+                        footer: function(tooltipItem, data) {
+                          console.log(tooltipItem[0].datasetIndex);
+                            var dataLabel = Number(tooltipItem[0].parsed.x);
+                            for (let i = 0; i < bands.length; i++) {
+                              if (bands[i] >= dataLabel - 5 && bands[i] <= dataLabel + 5) {
+                                return 'File: ' + names[tooltipItem[0].datasetIndex] + '\nComp: ' + bandsComp[i] + '\nBand: ' + tooltipItem[0].parsed.x + '\nValue: ' + tooltipItem[0].parsed.y;
+                              } else {
+                                return 'File: ' + names[tooltipItem[0].datasetIndex] + '\nBand: ' + tooltipItem[0].parsed.x + '\nValue: ' + tooltipItem[0].parsed.y;
+                              }
+                            } 
+                        },
+                  } 
+                },
+                autocolors: false,
+                annotation: {},
+                zoom: {zoom: {
+                          wheel: {enabled: true},
+                          pinch: {enabled: true},
+                          mode: 'xy',
+                  }
+                },
+              }
+            }
+
+          });
+        }
+      </script>
+      <div class="row ms-0 me-0 bg-secondary p-0">
+        <div class="col bg-dark p-0  text-center">
+          <a id="outlierRemoval" class="text-white btn p-0 f12"
+            onclick="myChart.resetZoom()">
+            <span class="icon"><i class="fas fa-home"></i></span>
+            <span class="item">Reset zoom</span>
+          </a>
+        </div>
+        <div class="col bg-dark p-0  text-center">
+          <a id="export1" class="text-white btn p-0 f12" href="/download-csv2">
+            <span class="icon"><i class="fas fa-home"></i></span>
+            <span class="item">Export Data</span>
+          </a>
+        </div>
+          <div class="col bg-dark p-0  text-center">
+            <a id="fullScreen" class="text-white btn p-0 f12">
+              <span class="icon"><i class="fas fa-home"></i></span>
+              <span class="item">Fullscreen</span>
+            </a>
+            <script>
+              const openFullScreenButton = document.getElementById("fullScreen");
+              openFullScreenButton.addEventListener("click", openFullScreen);
+            
+              function openFullScreen() {
+                const newWindow = window.open("", "_blank", "fullscreen=yes");
+                window.addEventListener("message", receiveDataFromNewWindow);
+
+                function receiveDataFromNewWindow(event) {
+                  //var datasetIndex = elements[0].datasetIndex;
+                  undoStackDatos.pushState(datos[event.data.message]);
+                  undoStackDatosDS3.pushState(datosDS3[event.data.message]);
+                  myChart.data.datasets.splice(event.data.message, 1);
+                  var d1 = datos.splice(event.data.message, 1);
+                  var d2 = datosDS3.splice(event.data.message, 1);
+                  var d3 = 0;
+                  var d4 = 0;
+                  if (noFluo.length > 0) {d3 = 
+                    undoStackNoFluo.pushState(noFluo[event.data.message]);
+                    noFluo.splice(event.data.message, 1)
+                    } else {console.log("Array is empty")};
+                  if (normal.length > 0) {
+                    undoStackNormal.pushState(normal[event.data.message]);
+                    d4 = normal.splice(event.data.message, 1)
+                    } else {console.log("Array is empty")};
+                    console.log("Received data from new window:", event.data.message);
+                    //datos.splice(event.data.message, 1);
+                    //datosDS3.splice(event.data.message, 1);
+                    //myChart.data.datasets.splice(event.data.message, 1);
+                    myChart.update();
+                    $.ajax({
+                      url: '/update-variable',
+                      method: 'POST',
+                      contentType: 'application/json',
+                      data: JSON.stringify({ 
+                        datos : datos,
+                        datosDS3 : datosDS3,
+                        noFluo : noFluo,
+                        normal : normal
+                      }),
+                      success: function(response) {},
+                    });
+                }
+
+                newWindow.document.write(`
+                <html lang="en">
+                  <head>
+                      <meta charset="UTF-8">
+                      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css">
+                      <script src="https://code.jquery.com/jquery-3.3.1.min.js" async><\/script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.js" async><\/script>
+                      <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js" async><\/script>
+                      <title>Fullscreen</title>
+                      <style>
+                          html, body {height: 100%}
+                          body {background-image: url('./images/2.JPG')}
+                          .full-height {min-height: 100vh}
+                      </style>
+                      <script src="./jss/tomatoPreProc.js" async><\/script>
+                      <script>
+                        function sendDataToOpener(erased) {
+                          const data = {message: erased};
+                          if (window.opener) {window.opener.postMessage(data, "*")}
+                        }
+                      <\/script>
+                  </head>
+                  <body>
+                      <div class="col p-0 border border-dark ms-3 me-1" id="chartContainer">
+                          <canvas id="myChart" class="border border-dark p-0" style="width:100%;height:94%;opacity:1;"></canvas>
+                          <div class="row ms-0 me-0 bg-secondary p-0">
+                            <div class="col bg-dark p-0  text-center">
+                              <a id="outlierRemoval" class="text-white btn p-0 f12"
+                                onclick="myChart.resetZoom()">
+                                <span class="icon"><i class="fas fa-home"></i></span>
+                                <span class="item">Reset zoom</span>
+                              </a>
+                            </div>
+                          </div>
+                          <script>
+                            window.addEventListener('message', function(event) {plotChart1(event.data)});
+                            function plotChart1(dataset) {
+                              const ctx = document.getElementById('myChart').getContext('2d');
+                              const plugin = {
+                                id: 'customCanvasBackgroundColor',
+                                beforeDraw: (chart, args, options) => {
+                                  const {ctx} = chart;
+                                  ctx.save();
+                                  ctx.globalCompositeOperation = 'destination-over';
+                                  ctx.fillStyle = options.color || '#99ffff';
+                                  ctx.fillRect(0, 0, chart.width, chart.height);
+                                  ctx.restore();
+                                }
+                              };
+                              myChart = new Chart(ctx, {
+                                type: 'scatter',
+                                data: {datasets: dataset},
+                                plugins: [plugin],
+                                options: {
+                                  onClick: function(event, elements) {
+                                    if (elements.length > 0) {
+                                      var datasetIndex = elements[0].datasetIndex;
+                                      myChart.data.datasets.splice(datasetIndex, 1);
+                                      var erased = datasetIndex;
+                                      console.log(erased)
+                                      sendDataToOpener(erased);
+                                      myChart.update()}
+                                  },
+                                  maintainAspectRatio: true,
+                                  animation: false,
+                                  scales: {
+                                    y: {
+                                      ticks: {callback: function (value, index, values) {
+                                          return value / 100;}},
+                                      border: {color: 'black'},
+                                      ticks: {color: 'black'},
+                                      beginAtZero: true,
+                                      title: {color: 'black', display: true, text: 'Intensity (a.u.)'},
+                                    },
+                                    x: {
+                                      min: 800,
+                                      max: 1750,
+                                      border: {color: 'black'},
+                                      ticks: {color: 'black'},
+                                      title: {color: 'black', display: true, text: 'Raman Shift [cm -1]'},
+                                    },
+                                  },
+                                  plugins: {
+                                    customCanvasBackgroundColor: {color: 'white'},
+                                    legend: {display: true},
+                                    tooltip: {enabled: true},
+                                    autocolors: false,
+                                    annotation: {},
+                                    zoom: {zoom: {
+                                              wheel: {enabled: true},
+                                              pinch: {enabled: true},
+                                              mode: 'xy',
+                                      }
+                                    },
+                                  }
+                                }
+                              });
+                            }
+                          <\/script>
+                        </div>
+                        
+                      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js" async><\/script>
+                  </body>
+                  </html>
+                `);
+                setTimeout(() => {
+                newWindow.postMessage(myChart.data.datasets, '*');
+              }, 50);
+              }
+            </script>
+          </div> 
+        <div class="col bg-dark p-0  text-center">
+          <a id="undo" class="text-white btn p-0 f12">
+            <span class="icon"><i class="fas fa-home"></i></span>
+            <span class="item">Undo</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col ms-0 ps-0 me-4 pe-0 border border-dark bg-dark" id="3dplot">
+      <script>
+      TESTER = document.getElementById('3dplot');
+      Plotly.newPlot( TESTER, [{x: [0],	y: [0],	z: [0], mode: 'markers', type: 'scatter3d', }], {margin: {t: 20, l: 20, r: 20, b: 20}}, {responsive: true} ); 
+      </script>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
+    </script>
+
+  <script src="./jss/tomatoClassifiers.js"></script>
+
+  <footer>
+    <div class="flex-row fixed-bottom border border-success bg-secondary d-flex justify-content-center">
+      <a href="https://conacyt.mx/" id="conacyt">
+        <img src="./images/conacyt.png" height="60" alt="conacyt.mx">
+      </a>
+      <a href="https://www.uaslp.mx/">
+        <img src="./images/uaslp.png" height="60" alt="uaslp.mx">
+      </a>
+      <a href="http://www.ciacyt.uaslp.mx/">
+        <img src="./images/ciacytNew.png" height="60" alt="ciacyt.uaslp.mx">
+      </a>
+      <a href="https://www.centrogeo.org.mx/">
+        <img src="./images/GEO.png" height="60" alt="centrogeo.org.mx">
+      </a>
+      <a href="https://www.uaaan.edu.mx">
+        <img src="./images/uaaan.png" height="60" alt="uaaan.edu.mx">
+      </a>
+    </div>
+  </footer>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+<html lang="en">
+                  <head>
+                      <meta charset="UTF-8">
+                      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css">
+                      <script src="https://code.jquery.com/jquery-3.3.1.min.js" async></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.js" async></script>
+                      <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/1.2.1/chartjs-plugin-zoom.min.js" async></script>
+                      <title>Fullscreen</title>
+                      <style>
+                          html, body {height: 100%}
+                          body {background-image: url('./images/2.JPG')}
+                          .full-height {min-height: 100vh}
+                      </style>
+                      <script src="./jss/tomatoPreProc.js" async></script>
+                  </head>
+                  <body>
+                      <div class="col p-0 border border-dark ms-3 me-3" id="chartContainer">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-bordered" id="resultados">
+                                    <h2 class="pt-2 mb-0 text-center">Results</h2>
+                                </table>
+                            </div>
+                        </div>                          <div class="row ms-0 me-0 bg-secondary p-0">
+                            <div class="col bg-dark p-0  text-center">
+                              <a id="outlierRemoval" class="text-white btn p-0 f12"
+                                onclick="myChart.resetZoom()">
+                                <span class="icon"><i class="fas fa-home"></i></span>
+                                <span class="item">Reset zoom</span>
+                              </a>
+                            </div>
+                          </div>
+                          <script>
+                            window.addEventListener('message', function(event) {plotChart1(event.data)});
+                          </script>
+                        </div>
+                        
+                      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js" async></script>
+                  </body>
+                  </html>
